@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project I wanna be a platformer with libraries in sub-folder">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+	
+	
+	<property file="build_info.properties"/>
+	<property name="build.number" value="${build.major.number}.${build.revision.number}"/>
+	
+	<property name="root" location="C:\LRFinal" />
+	<property name="launch4j.dir" location="C:\LRFinal\launch4j" />
+	<property name="buildpath" location="C:\LRFinal\builds\iwblr alpha ${build.number}" />
+	<property name="workspace" location="C:\LRFinal\workspace\I wanna be less random" />
+	
+    <target name="create_run_jar">
+    	
+  	   <antcall target="revision"></antcall>
+    	
+        
+    	<delete dir="${buildpath}"/>
+    	
+        <jar destfile="${buildpath}/game.jar">
+            <manifest>
+                <attribute name="Main-Class" value="com.teymurakh.iwblr.core.Game"/>
+                <attribute name="Class-Path" value=". game_lib/lwjgl.jar game_lib/slick-util.jar game_lib/lwjgl_util.jar game_lib/luaj-jse-3.0-beta1.jar"/>
+            </manifest>
+            <fileset dir="C:/LRFinal/workspace/I wanna be less random/bin"/>
+        </jar>
+        <delete dir="${buildpath}/game_lib"/>
+        <mkdir dir="${buildpath}/game_lib"/>
+        <copy file="${workspace}/lib/jars/lwjgl.jar" todir="${buildpath}/game_lib"/>
+        <copy file="${workspace}/lib/jars/slick-util.jar" todir="${buildpath}/game_lib"/>
+        <copy file="${workspace}/lib/jars/lwjgl_util.jar" todir="${buildpath}/game_lib"/>
+        <copy file="${workspace}/lib/jars/luaj-jse-3.0-beta1.jar" todir="${buildpath}/game_lib"/>
+    	
+    	<copy todir="${buildpath}/res" >  
+    	    <fileset dir="${workspace}/res">  
+    	        <include name="**"/>
+    	    </fileset>
+    	</copy>
+    	
+    	<copy todir="${buildpath}/levels" >  
+    	    <fileset dir="${workspace}/levels">
+    	        <include name="**"/>
+    	    </fileset>
+    	</copy>
+    	
+    	<copy todir="${buildpath}/saves" >  
+    	    <fileset dir="${workspace}/saves">
+    	        <include name="**"/>
+    	    </fileset>
+    	</copy>
+    	
+    	<copy todir="${buildpath}" >  
+    	    <fileset dir="${workspace}/build extras">
+    	        <include name="**"/>
+    	    </fileset>
+    	</copy>
+    	
+    	<copy todir="${buildpath}/scripts" >  
+    	    <fileset dir="${workspace}/scripts">
+    	        <include name="**"/>
+    	    </fileset>
+    	</copy>
+    	
+        <copy file="${workspace}/settings.cfg" todir="${buildpath}"/>
+        <copy file="${workspace}/build_info.properties" todir="${buildpath}"/>
+    	
+    	<taskdef name="launch4j"
+    	    classname="net.sf.launch4j.ant.Launch4jTask"
+    	    classpath="${launch4j.dir}/launch4j.jar
+    	        :${launch4j.dir}/lib/xstream.jar" />
+    	
+    	<launch4j configFile="${root}\launch4jres\iwblr.xml" jar="${buildpath}/game.jar" outfile="${buildpath}/I Wanna Be Less Random.exe" />
+    	
+    	<delete file="${buildpath}/game.jar" />
+    	
+    	<zip destfile="${buildpath}/iwblr alpha ${build.number}.zip"
+    	    basedir="${buildpath}"
+    	   includes="**"/> 
+    	
+    	
+    </target>
+
+	<target name="revision">
+	    <propertyfile  file="build_info.properties">
+	            <entry key="build.revision.number" type="int" operation="+" value="1" pattern="0000"/>
+	    </propertyfile>
+	</target>
+
+	<target name="major">
+	    <propertyfile  file="build_info.properties">
+	            <entry key="build.major.number" type="int" operation="+" value="1" pattern="0"/>
+	            <entry key="build.revision.number" type="int" value="0" pattern="0000"/>
+	    </propertyfile>
+	</target>
+	
+	
+	
+	
+	
+	
+	
+</project>
+
+
+
+
+

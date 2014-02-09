@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<gameState version="1.5">
+    <parameters>
+        <parameter name="guy_y" value="1.2608438"/>
+        <parameter name="guy_x" value="5.2200384"/>
+    </parameters>
+</gameState>
