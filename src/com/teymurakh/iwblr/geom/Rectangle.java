@@ -40,10 +40,10 @@ public class Rectangle extends Shape {
 	}
 	
 	public boolean equals(Rectangle compare) {
-		boolean roomChanged = (!Logic.equal(this.getX1(), compare.getX1()) ||
-				!Logic.equal(this.getY1(), compare.getY1()) ||
-				!Logic.equal(this.getWidth(), compare.getWidth()) ||
-				!Logic.equal(this.getHeight(), compare.getHeight()));
+		boolean roomChanged = (Logic.equal(this.getX1(), compare.getX1()) &&
+				Logic.equal(this.getY1(), compare.getY1()) &&
+				Logic.equal(this.getWidth(), compare.getWidth()) &&
+				Logic.equal(this.getHeight(), compare.getHeight()));
 		
 		return roomChanged;
 	}

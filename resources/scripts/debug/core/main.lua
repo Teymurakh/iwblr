@@ -5,8 +5,8 @@ do
 -------------------Java interface
 -----------------------------------------------
 function initialize(toLoad)
-  rootpath = "resources/scripts/debug"
-  postfix = ".lua"
+  rootpath = "resources/scripts/compiled"
+  postfix = ""
 
   allowed = {}
   allowed.print = print
@@ -45,7 +45,10 @@ end
 
 function death(id)
   entities[id]:death()
-  --entities[id] = nil
+end
+
+function placed(id)
+  entities[id]:placed()
 end
 
 function collided(id, entity, direction)

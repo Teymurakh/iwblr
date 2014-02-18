@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.teymurakh.iwblr.core.Camera;
 import com.teymurakh.iwblr.core.Game;
 import com.teymurakh.iwblr.core.World;
 import com.teymurakh.iwblr.core.graphics.AnimationSet;
@@ -21,38 +22,6 @@ import com.teymurakh.iwblr.util.MyColor;
 
 
 public class Entity implements Drawable {
-	
-	public static String[] types = new String[]{	
-	"ai",
-	"block",
-	"particle",
-	"creature",
-	"entity",
-	"fake_block",
-	"grenade",
-	"guy",
-	"healthpack",
-	"homing_projectile",
-	"jump_reset",
-	"laser_beam",
-	"moving_spike",
-	"physical_spike",
-	"pick_up",
-	"projectile",
-	"save_point",
-	"spawner",
-	"speed_boost",
-	"spike",
-	"spring",
-	"static_spike",
-	"terrain",
-	"physical",
-	"depth_collision",
-	"movable",
-	"platform",
-	"platform_bouncy",
-	"save"
-	};
 	
 	
 	public static long globalId = 0;
@@ -178,7 +147,7 @@ public class Entity implements Drawable {
 	}
 	
 	public void addAnimation(String key, String animationName) {
-		animations.put(key, Game.animationFactory.getAnimation(animationName).clone());
+		animations.put(key, Game.animationFactory.getAnimation(animationName));
 	}
 	
 	public void addTag(String tag) {
@@ -265,7 +234,7 @@ public class Entity implements Drawable {
 	
 	public void setAnimation(String animationName) {
 		this.animationName = animationName;
-		this.animation = Game.animationFactory.getAnimation(animationName).clone();
+		this.animation = Game.animationFactory.getAnimation(animationName);
 	}
 	
 	public String getAnimation() {
@@ -385,10 +354,13 @@ public class Entity implements Drawable {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	
 	public void notifyPlaced(World world) {
 		this.world = world;
 		this.gravityAcceleration = world.getGravityAcceleration();
 		this.creationTime = world.getWorldTime();
+		LuaVM.call("placed", intId);
 	}
 	
 	public Rectangle getRect() {
@@ -433,19 +405,24 @@ public class Entity implements Drawable {
 	}
 	
 	public void draw(Renderer worldRenderer) {
-		drawDebug(worldRenderer);
-		drawTexture(worldRenderer);
+		drawDebug(worldRenderer, world.getCamera());
+		drawTexture(worldRenderer, world.getCamera());
+	}
+	
+	public void draw(Renderer worldRenderer, Camera camera) {
+		drawDebug(worldRenderer, camera);
+		drawTexture(worldRenderer, camera);
 	}
 	
 	public void draw(Renderer worldRenderer, float x, float y) {
 	}
 	
-	public void drawDebug(Renderer worldRenderer) {
+	public void drawDebug(Renderer worldRenderer, Camera camera) {
 		if (Game.config.isDrawDebug()) {
 			float scale = Game.config.getScale();
 			worldRenderer.fillRect(
-				(float)((pos.getX() * scale) + Game.config.getScreenWidth() / 2 - world.getCamera().getPosition().getX() * scale),
-				(float)((pos.getY() * scale) + Game.config.getScreenHeight() / 2 - world.getCamera().getPosition().getY() * scale),
+				(float)((pos.getX() * scale) + Game.config.getScreenWidth() / 2 - camera.getPosition().getX() * scale),
+				(float)((pos.getY() * scale) + Game.config.getScreenHeight() / 2 - camera.getPosition().getY() * scale),
 				(float)(dim.getX() * scale),
 				(float)(dim.getY() * scale),
 				debugColor
@@ -457,10 +434,10 @@ public class Entity implements Drawable {
 			Line line = lines[i];
 			
 			worldRenderer.drawLine(
-					(float)((line.start.x * scale) + Game.config.getScreenWidth() / 2 - world.getCamera().getPosition().getX() * scale),
-					(float)((line.start.y * scale) + Game.config.getScreenHeight() / 2 - world.getCamera().getPosition().getY() * scale),
-					(float)((line.end.x * scale) + Game.config.getScreenWidth() / 2 - world.getCamera().getPosition().getX() * scale),
-					(float)((line.end.y * scale) + Game.config.getScreenHeight() / 2 - world.getCamera().getPosition().getY() * scale),
+					(float)((line.start.x * scale) + Game.config.getScreenWidth() / 2 - camera.getPosition().getX() * scale),
+					(float)((line.start.y * scale) + Game.config.getScreenHeight() / 2 - camera.getPosition().getY() * scale),
+					(float)((line.end.x * scale) + Game.config.getScreenWidth() / 2 - camera.getPosition().getX() * scale),
+					(float)((line.end.y * scale) + Game.config.getScreenHeight() / 2 - camera.getPosition().getY() * scale),
 					0,
 					new MyColor(1f, 0f, 0f, 1f)
 			);
@@ -470,10 +447,10 @@ public class Entity implements Drawable {
 		}
 	}
 	
-	public void drawTexture(Renderer worldRenderer) {
+	public void drawTexture(Renderer worldRenderer, Camera camera) {
 		// TODO fix trying to draw null animations
 		if (animation != null) {
-			animation.draw(worldRenderer, pos, dim, world.getCamera(), rotation, flipHorizontal, flipVertical);
+			animation.draw(worldRenderer, pos, dim, camera, rotation, flipHorizontal, flipVertical);
 		}
 	}
 	

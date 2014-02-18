@@ -146,6 +146,7 @@ public class TextureHandler {
 	}
 	
 	private class Canvas {
+		private final int extraSpace = 2;
 		private final int id;
 		
 		private int x;
@@ -176,7 +177,7 @@ public class TextureHandler {
 
 			if(x + imageWidth > width){
 				x = 0;
-				y += largestY + 1;
+				y += largestY + extraSpace;
 				largestY = 0;
 			}
 			
@@ -185,7 +186,7 @@ public class TextureHandler {
 			Region temp = new Region(x, y, imageWidth, imageHeight, name);
 			regions.add(temp);
 
-			x += imageWidth + 1;
+			x += imageWidth + extraSpace;
 
 			if (imageHeight > largestY) {
 				largestY = imageHeight;

@@ -1,2 +1,7 @@
-guy_x = 22.28125
-guy_y = 0.65625
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<gameState version="1.5">
+    <parameters>
+        <parameter name="guy_y" value="4.0851803"/>
+        <parameter name="guy_x" value="66.81105"/>
+    </parameters>
+</gameState>

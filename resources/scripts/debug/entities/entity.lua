@@ -24,6 +24,9 @@ end
 function death(this)
 end
 
+function placed(this) 
+end
+
 function update(this, delta)
   this:updateTimers(delta)
   this:updatePos(delta)
@@ -34,8 +37,8 @@ end
 
 function collided(this, entity, direction)
   if not (this.team == entity.team) then
-    if not entity.is_invulnerable then
-      entity:takeDamage(this.collision_damage)
+    if not this.is_invulnerable then
+      this:takeDamage(entity.collision_damage)
     end
     this:takeDamage(this.collision_selfdamage)
   end

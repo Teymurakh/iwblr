@@ -33,14 +33,8 @@
         <copy file="${workspace}/lib/jars/lwjgl_util.jar" todir="${buildpath}/game_lib"/>
         <copy file="${workspace}/lib/jars/luaj-jse-3.0-beta1.jar" todir="${buildpath}/game_lib"/>
     	
-    	<copy todir="${buildpath}/res" >  
-    	    <fileset dir="${workspace}/res">  
-    	        <include name="**"/>
-    	    </fileset>
-    	</copy>
-    	
-    	<copy todir="${buildpath}/levels" >  
-    	    <fileset dir="${workspace}/levels">
+    	<copy todir="${buildpath}/resources" >  
+    	    <fileset dir="${workspace}/resources">  
     	        <include name="**"/>
     	    </fileset>
     	</copy>
@@ -51,14 +45,14 @@
     	    </fileset>
     	</copy>
     	
-    	<copy todir="${buildpath}" >  
-    	    <fileset dir="${workspace}/build extras">
+    	<copy todir="${buildpath}/debug" >  
+    	    <fileset dir="${workspace}/debug">
     	        <include name="**"/>
     	    </fileset>
     	</copy>
     	
-    	<copy todir="${buildpath}/scripts" >  
-    	    <fileset dir="${workspace}/scripts">
+    	<copy todir="${buildpath}" >  
+    	    <fileset dir="${workspace}/build extras">
     	        <include name="**"/>
     	    </fileset>
     	</copy>

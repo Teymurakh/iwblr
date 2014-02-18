@@ -5,7 +5,8 @@ import com.teymurakh.iwblr.core.Game;
 import com.teymurakh.iwblr.geom.Vec;
 
 public class Graphic {
-	private String textureName;
+	
+	
 	private MappedTexture mappedTexture;
 	private float width;
 	private float height;
@@ -13,8 +14,8 @@ public class Graphic {
 	private float offsetY;
 	private float rotation;
 	
-	public Graphic(String textureName, float width, float height, float rotation, float offsetX, float offsetY) {
-		setTextureName(textureName);
+	public Graphic(MappedTexture mappedTexture, float width, float height, float rotation, float offsetX, float offsetY) {
+		this.mappedTexture = mappedTexture;
 		this.width = width;
 		this.height = height;
 		this.offsetX = offsetX;
@@ -23,7 +24,7 @@ public class Graphic {
 	}
 	
 	public Graphic clone() {
-		Graphic clonned = new Graphic(this.textureName, this.width, this.height, this.rotation, this.offsetX, this.offsetY);
+		Graphic clonned = new Graphic(mappedTexture.clone(), this.width, this.height, this.rotation, this.offsetX, this.offsetY);
 		return clonned;
 	}
 
@@ -40,15 +41,6 @@ public class Graphic {
 				flipHorizontal,
 				flipVertical
 				);
-	}
-	
-	public String getTextureName() {
-		return textureName;
-	}
-
-	public void setTextureName(String textureName) {
-		this.textureName = textureName;
-		this.mappedTexture = Game.textureHandler.getMappedTexture(textureName);
 	}
 
 	public float getWidth() {

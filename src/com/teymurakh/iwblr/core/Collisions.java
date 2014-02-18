@@ -52,10 +52,12 @@ public class Collisions {
 		
 		
 		if (entity.hasTag("depth_collision")) {
-			Entity entity2 = getLeastDeep(entity, entityList);
-			
-			if (entity2 != null) {
-				entityVsEntity(entity, entity2);
+			for (int i = 0; i < 2; i++) {
+				Entity entity2 = getLeastDeep(entity, entityList);
+
+				if (entity2 != null) {
+					entityVsEntity(entity, entity2);
+				}
 			}
 			
 		} else  {
@@ -69,12 +71,11 @@ public class Collisions {
 		if (entity1.isRectangular() && entity2.isRectangular()) { // Check if both entities use rectangular collision
 			if (rectHitbox(entity1, entity2)) { // Check if two entities collide
 				float direction = determineDirection(entity1, entity2); // Get the direction of the collision
-				//System.out.println("checking vs guy: " + entity1.getScriptName());
 				entity1.collidedWithDirection(entity2, direction); // Tell the entity that it has collided
 			}
 		} else {  // If one of the entities don't use rectangular collision
 			if(lineHitbox(entity1, entity2)) { // Check if a collision of lines has happened 
-				entity1.collidedWithDirection(entity2, -1); // Tell the entity that it has collided, giving -1 as unknown direction
+				entity2.collidedWithDirection(entity1, -1); // Tell the entity that it has collided, giving -1 as unknown direction
 			}
 		}
 	}
@@ -131,33 +132,31 @@ public class Collisions {
 	private Entity getLeastDeep(Entity entity, Collection<Entity> entitiesArray) {
 
 		Entity leastDepthEntity = null;
-		for (int i = 0; i < 2; i++) {
-			ArrayList<Entity> depthCollisionList = new ArrayList<Entity>();
+		ArrayList<Entity> depthCollisionList = new ArrayList<Entity>();
 
-			for (Entity item : entitiesArray) {
-				if (entity.isRectangular() && item.isRectangular()) { // || twoLineArraysIntersect(entity.getJavaHitbox(), item.getJavaHitbox())) {
-					if (twoRectangles(entity.getRect(), item.getRect())) {
-						depthCollisionList.add(item);
-					}
-				} 
-			}
-
-			float lastDepth = Float.MAX_VALUE;
-
-			for (Entity item : depthCollisionList) {
-				float depthY = entity.getCenterY() - item.getCenterY();
-				float depthX = entity.getCenterX() - item.getCenterX();
-				float depth = Math.abs(depthX) + Math.abs(depthY);
-				if (depth < lastDepth) {
-					leastDepthEntity = item;
-					lastDepth = depth;
+		for (Entity item : entitiesArray) {
+			if (entity.isRectangular() && item.isRectangular()) { // || twoLineArraysIntersect(entity.getJavaHitbox(), item.getJavaHitbox())) {
+				if (twoRectangles(entity.getRect(), item.getRect())) {
+					depthCollisionList.add(item);
 				}
+			} 
+		}
+
+		float lastDepth = Float.MAX_VALUE;
+
+		for (Entity item : depthCollisionList) {
+			float depthY = entity.getCenterY() - item.getCenterY();
+			float depthX = entity.getCenterX() - item.getCenterX();
+			float depth = Math.abs(depthX) + Math.abs(depthY);
+			if (depth < lastDepth) {
+				leastDepthEntity = item;
+				lastDepth = depth;
 			}
 		}
 
 		return leastDepthEntity;
 	}
-	
+
 	
 	
 	

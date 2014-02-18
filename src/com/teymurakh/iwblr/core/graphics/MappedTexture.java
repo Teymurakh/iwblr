@@ -11,12 +11,12 @@ public class MappedTexture {
 	private float width;
 	private float height;
 	private float rotationAngle;
-	private boolean mirrorHorizantal;
+	private boolean mirrorHorizontal;
 	private boolean mirrorVertical;
 	
 	
 	public MappedTexture(float x, float y, float width, float height, Texture texture) {
-		this.mirrorHorizantal = false;
+		this.mirrorHorizontal = false;
 		this.mirrorVertical = false;
 		this.texture = texture;
 		this.x = x;
@@ -27,7 +27,7 @@ public class MappedTexture {
 	}
 	
 	public MappedTexture(float x, float y, float width, float height, Texture texture, boolean mirrorHorizontal) {
-		this.mirrorHorizantal = mirrorHorizontal;
+		this.mirrorHorizontal = mirrorHorizontal;
 		this.mirrorVertical = false;
 		this.texture = texture;
 		this.x = x;
@@ -38,7 +38,7 @@ public class MappedTexture {
 	}
 	
 	public MappedTexture(float x, float y, float width, float height, Texture texture, boolean mirrorHorizontal, boolean mirrorVertical) {
-		this.mirrorHorizantal = mirrorHorizontal;
+		this.mirrorHorizontal = mirrorHorizontal;
 		this.mirrorVertical = mirrorVertical;
 		this.texture = texture;
 		this.x = x;
@@ -48,37 +48,10 @@ public class MappedTexture {
 		this.rotationAngle = 0f;
 	}
 	
-	public MappedTexture(MappedTexture toClone, float rotationAngle) {
-		this.mirrorHorizantal = false;
-		this.mirrorVertical = false;
-		this.texture = toClone.texture;
-		this.x = toClone.x;
-		this.y = toClone.y;
-		this.height = toClone.height;
-		this.width = toClone.width;
-		this.rotationAngle = rotationAngle;
+	public MappedTexture clone() {
+		return new MappedTexture(x, y, width, height, texture, mirrorHorizontal, mirrorVertical);
 	}
 	
-	public MappedTexture(MappedTexture toClone, float rotationAngle, boolean mirrorHorizontal) {
-		this.mirrorHorizantal = mirrorHorizontal;
-		this.texture = toClone.texture;
-		this.x = toClone.x;
-		this.y = toClone.y;
-		this.height = toClone.height;
-		this.width = toClone.width;
-		this.rotationAngle = rotationAngle;
-	}
-
-	public MappedTexture(MappedTexture toClone, float rotationAngle, boolean mirrorHorizontal, boolean mirrorVertical) {
-		this.mirrorHorizantal = mirrorHorizontal;
-		this.mirrorVertical = mirrorVertical;
-		this.texture = toClone.texture;
-		this.x = toClone.x;
-		this.y = toClone.y;
-		this.height = toClone.height;
-		this.width = toClone.width;
-		this.rotationAngle = rotationAngle;
-	}
 	
 	public Texture getTexture() {
 		return texture;
@@ -101,11 +74,11 @@ public class MappedTexture {
 	}
 
 	public boolean isMirrorHorizantal() {
-		return mirrorHorizantal;
+		return mirrorHorizontal;
 	}
 
 	public void setMirrorHorizantal(boolean mirrorHorizantal) {
-		this.mirrorHorizantal = mirrorHorizantal;
+		this.mirrorHorizontal = mirrorHorizantal;
 	}
 
 	public boolean isMirrorVertical() {

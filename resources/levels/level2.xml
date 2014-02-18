@@ -8,7 +8,7 @@
             <entity name="block" x="3.0" y="0.0"/>
             <entity name="block" x="4.0" y="0.0"/>
             <entity name="block" x="5.0" y="0.0"/>
-            <entity name="save" x="5.0" y="2"/>
+            <entity name="save" x="5.0" y="2.0"/>
             <entity name="block" x="6.0" y="0.0"/>
             <entity name="block" x="7.0" y="0.0"/>
             <entity name="block" x="8.0" y="0.0"/>
@@ -21,6 +21,9 @@
             <entity name="block" x="4.0" y="6.0"/>
             <entity name="block" x="5.0" y="6.0"/>
             <entity name="block" x="6.0" y="6.0"/>
+            <entity name="yellowstar.screen1.trigger3" x="7.0" y="2.0"/>
+            <entity name="spike90" x="3.0" y="3.0"/>
+            <entity name="spike90" x="9.0" y="3.0"/>
         </group>
     </entities>
 </level>

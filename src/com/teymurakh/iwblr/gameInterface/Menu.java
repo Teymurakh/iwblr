@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import com.teymurakh.iwblr.core.Game;
 import com.teymurakh.iwblr.core.graphics.Drawable;
 import com.teymurakh.iwblr.core.graphics.Renderer;
+import com.teymurakh.iwblr.core.graphics.TextureHandler;
 import com.teymurakh.iwblr.geom.Rectangle;
 import com.teymurakh.iwblr.util.MyColor;
 
 public class Menu {
+	private final TextureHandler textureHandler;
+	
 	
 	private int levelToLoad;
 	
@@ -28,6 +31,10 @@ public class Menu {
 	private InterfaceBlock gameOverConatiner;
 	private RelativeBlock gameOverText;
 	
+	public Menu(TextureHandler textureHandler) {
+		this.textureHandler = textureHandler;
+	}
+	
 	public void initialize() {
 		this.levelToLoad = 1;
 		elementList = new ArrayList<Drawable>();
@@ -42,10 +49,10 @@ public class Menu {
 		this.newGameButton = new RelativeBlock(100.0f, -100.0f, 400.0f, 70.0f, new MyColor(MyColor.GREEN), "New Game");
 		menuButtons.addElement(this.newGameButton);
 		
-		this.previousLevelButton = new RelativeBlock(100.0f, -200.0f, 32.0f, 64.0f, new MyColor(MyColor.GREEN), Game.textureHandler.getMappedTexture("left_arrow"));
+		this.previousLevelButton = new RelativeBlock(100.0f, -200.0f, 32.0f, 64.0f, new MyColor(MyColor.GREEN), textureHandler.getMappedTexture("left_arrow"));
 		menuButtons.addElement(this.previousLevelButton);
 		
-		this.nextLevelButton = new RelativeBlock(468.0f, -200.0f, 32.0f, 64.0f, new MyColor(MyColor.GREEN), Game.textureHandler.getMappedTexture("right_arrow"));
+		this.nextLevelButton = new RelativeBlock(468.0f, -200.0f, 32.0f, 64.0f, new MyColor(MyColor.GREEN), textureHandler.getMappedTexture("right_arrow"));
 		menuButtons.addElement(this.nextLevelButton);
 		
 		this.loadLevelButton = new RelativeBlock(150.0f, -200.0f, 300.0f, 64.0f, new MyColor(MyColor.GREEN), "Load Level " + levelToLoad);
@@ -54,7 +61,7 @@ public class Menu {
 		this.saveLevelButton = new RelativeBlock(150.0f, -300.0f, 300.0f, 64.0f, new MyColor(MyColor.GREEN), "Save Level " + levelToLoad);
 		menuButtons.addElement(saveLevelButton);
 	
-		this.gameOverText = new RelativeBlock(0, 0, 766.0f, 160.0f, new MyColor(MyColor.GREEN), Game.textureHandler.getMappedTexture("gameover"));
+		this.gameOverText = new RelativeBlock(0, 0, 766.0f, 160.0f, new MyColor(MyColor.GREEN), textureHandler.getMappedTexture("gameover"));
 		this.gameOverConatiner = new InterfaceBlock(new Rectangle(Game.config.getScreenWidth()/2f -766.0f/2f, Game.config.getScreenHeight()/2f +160.0f/2f, 766.0f, 160.0f), new MyColor(MyColor.RED));
 		this.gameOverConatiner.addElement(gameOverText);
 		gameOverScreen.add(gameOverConatiner);
@@ -68,14 +75,14 @@ public class Menu {
 		return "level" + levelToLoad;
 	}
 	
-	public void mouseClick(int key, int x, int y) {
+	public void mouseClick(int key, Game game, int x, int y) {
 		if (key == 0) {
 			if (continueButton.getRectangle().isInside(x, y)) {
-				Game.unPause();
+				game.unPause();
 			}
 			
 			if (newGameButton.getRectangle().isInside(x, y)) {
-				Game.newGame();
+				game.newGame();
 			}
 			
 			if (nextLevelButton.getRectangle().isInside(x, y)) {
@@ -87,10 +94,10 @@ public class Menu {
 			}
 			
 			if (loadLevelButton.getRectangle().isInside(x, y)) {
-				Game.loadLevel("level" + levelToLoad);
+				game.loadLevel("level" + levelToLoad);
 			}
 			if (saveLevelButton.getRectangle().isInside(x, y)) {
-				Game.saveLevel("level" + levelToLoad);
+				game.saveLevel("level" + levelToLoad);
 			}
 		}
 	}

@@ -5,7 +5,7 @@ package com.teymurakh.iwblr.core;
 import com.teymurakh.iwblr.entities.*;
 import com.teymurakh.iwblr.geom.Rectangle;
 import com.teymurakh.iwblr.geom.Vec;
-import com.teymurakh.iwblr.util.Timer5;
+import com.teymurakh.iwblr.util.Timer6;
 
 public class World {
 	
@@ -19,7 +19,7 @@ public class World {
 	private Vec gravityAcceleration;
 	private boolean paused;
 	
-	private Timer5 tickCountTimer = new Timer5(1000, 1000);
+	private Timer6 tickCountTimer = new Timer6(1f, 1f);
 	private int ticks = 0;
 	
 	private final WorldIO worldIO;
@@ -56,30 +56,33 @@ public class World {
 	}
 
 	public long getWorldTime() {
-		return getNanoDelta()/1000000;
+		return getNanoTime()/1000000;
 	}
 
 
-	//////////////////////////////////////////////////////////////////////////
-	@SuppressWarnings("unused")
-	private final int desiredDelta = 16;
-	private long accumulatedNano;
-	private long desiredDeltaNano = 16000000;
+	//////////////////////////////////////////////////////////////////////////	
+	public void nonEntityUpdate() {
+			float deltaNano = getNanoDelta();
+			float delta = deltaNano/1000000000f;
 
+			camera.update(delta);
+			ticks++;
+			if (tickCountTimer.evaluate(delta)) {
+				System.out.println("Ticks last second: " + ticks);
+				ticks = 0;
+			}
+	}
+	
 	public void update() {
 		if (!paused) {
-			accumulatedNano += getNanoDelta();
-			float delta = 1000f/60f/1000f;
+			float deltaNano = getNanoDelta();
+			float delta = deltaNano/1000000000f;
 
-			if (accumulatedNano > desiredDeltaNano) {
-				updateLoop(delta);
-				Game.worldRenderer.renderWorld(this);
-				ticks++;
-				if (tickCountTimer.evaluate(16)) {
-					System.out.println("Ticks last second: " + ticks);
-					ticks = 0;
-				}
-				accumulatedNano = 0;
+			updateLoop(delta);
+			ticks++;
+			if (tickCountTimer.evaluate(delta)) {
+				System.out.println("Ticks last second: " + ticks);
+				ticks = 0;
 			}
 		}
 	}
@@ -89,20 +92,18 @@ public class World {
 	private void updateLoop(float delta) {
 		checkScreenChange();
 		camera.update(delta);
-		if (!Game.config.isEditorEnabled()) {
 
-			if (!guy.isDead()) {
-				guy.update(delta);
-			}
-
-			// Update all entities
-			for(Entity item : listHelper.getActive()) {
-				item.update(delta);
-			}
-
-			// Call collision handler to doCollisions
-			Game.collisions.doCollisions(this);
+		if (!guy.isDead()) {
+			guy.update(delta);
 		}
+
+		// Update all entities
+		for(Entity item : listHelper.getActive()) {
+			item.update(delta);
+		}
+
+		// Call collision handler to doCollisions
+		Game.collisions.doCollisions(this);
 	}
 	
 	
@@ -113,7 +114,7 @@ public class World {
 	
 	private void checkScreenChange() {
 		Rectangle roomRect = getScreenForPos(guy.getCenterX(), guy.getCenterY());
-		if (roomRect.equals(lastRoomRect)) {
+		if (!roomRect.equals(lastRoomRect)) {
 			camera.setPosition(new Vec(roomRect.getX() + roomRect.getWidth()/2f, roomRect.getY() - roomRect.getHeight()/2f));
 			refreshActiveList(roomRect);
 			lastRoomRect = roomRect;
@@ -126,8 +127,8 @@ public class World {
 		float rectX = rectWidth * (float)Math.floor(x/rectWidth);
 		float rectY = rectHeight * (float)Math.floor(y/rectHeight);
 		
-		float extraWidth = 10f;
-		float extraHeight = 10f;
+		float extraWidth = 0f;
+		float extraHeight = 0f;
 		
 		float usedRectX = rectX - extraWidth/2f;
 		float usedRectY = rectY + extraHeight/2f + 19f - 1f;
@@ -140,7 +141,17 @@ public class World {
 	
 
 	protected void refreshActiveList(Rectangle roomRect) {
+		System.out.println("Refreshing active lists");
 		listHelper.refreshActive(roomRect);	
+		
+		for(Entity item : getGlobal()) {
+			if (Collisions.twoRectangles(roomRect, item.getRect())) {
+				Entity copiedEntity = new Entity(item.getScriptName());
+				Vec copiedPos = new Vec(item.getPos());
+				place(copiedEntity, copiedPos);
+			}
+		}
+		
 	}
 	
 	public void pause() {
@@ -165,18 +176,23 @@ public class World {
 	public void removeEntity(Entity entity) {
 		listHelper.removeEntity(entity);
 	}
+
+	public void removeGlobal(Entity entity) {
+		listHelper.removeGlobal(entity);
+	}
 	
 	public void place(Entity entity, Vec position) {
 		listHelper.addEntity(entity);
-		entity.notifyPlaced(this);
 		entity.getPos().set(position);
+		entity.notifyPlaced(this);
 	}
 	
 	
 	public void placeGlobal(Entity entity, Vec position) {
 		listHelper.addEntityGlobal(entity);
-		entity.notifyPlaced(this);
+		listHelper.addEntity(entity);
 		entity.getPos().set(position);
+		entity.notifyPlaced(this);
 	}
 	
 	
@@ -207,10 +223,6 @@ public class World {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public int getGlobalSize() {
 		return listHelper.getGlobalSize();
 	}
@@ -237,12 +249,40 @@ public class World {
 
 	public void loadLevel(String levelName) {
 		worldIO.loadLevel(levelName, this);
+		this.name = levelName;
+		loadState();
 	}
 	
 	/// SAVING
 	public void saveLevel(String levelName) {
 		worldIO.saveLevel(levelName, this);
 	}
+	
+	public void loadState() {
+		StringMap worldState = new StringMap();
+		worldState.loadState("saves/" + name + ".sav");
+		
+		float guyX = Float.parseFloat(worldState.get("guy_x"));
+		float guyY = Float.parseFloat(worldState.get("guy_y"));
+
+		guy.setPosX(guyX);
+		guy.setPosY(guyY);
+		
+		nanoLastTime = getNanoTime();
+	}
+	
+	public void saveState() {
+		StringMap worldState = new StringMap();
+		
+		worldState.put("guy_x", guy.getPosX()+"");
+		worldState.put("guy_y", guy.getPosY()+"");
+		
+		worldState.saveState("saves/" + name + ".sav");
+	}
+	
+	
+	
+	
 	
 	
 }

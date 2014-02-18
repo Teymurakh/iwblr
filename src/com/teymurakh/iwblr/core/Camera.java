@@ -18,7 +18,7 @@ public class Camera {
 	}
 	
 	public void update(float delta) {
-		if (Game.config.isEditorEnabled()) {
+		if (Game.editingMode) {
 			velocity.setY(0);
 			if (movingUp) {
 				velocity.setY(10f);
@@ -39,9 +39,8 @@ public class Camera {
 	}
 	
 	private void updatePosition(float delta) {
-		float deltaInSeconds = (float)(delta) / 1000f;
-		position.setX(position.getX() + (velocity.getX() * deltaInSeconds));
-		position.setY(position.getY() + (velocity.getY() * deltaInSeconds));
+		position.setX(position.getX() + (velocity.getX() * delta));
+		position.setY(position.getY() + (velocity.getY() * delta));
 	}
 
 	public Vec getPosition() {

@@ -22,7 +22,8 @@ end
 function initialize(this)
   this.j:addTag("guy");
   this.j:addTag("physical")
-  --this.j:addTag("depth_collision");
+  this.j:addTag("depth_collision");
+  this.j:setHitbox("rectangle")
   this.j:addCollision("block");
   this.j:addCollision("spike");
   this.j:addCollision("platform");
@@ -68,30 +69,24 @@ end
 
 
 function die(this)
-  for i = 0, 6 do
-  
-    local angle = 0
-    local scatter = math.random() * 360
-    local usedAngle = angle + scatter
+
+  this:playSound("guy_death")
+  for i = 0, 50 do
+    local usedAngle = math.random() * 360
 	
     local posX = this.j:getPosX() + math.random()*this.j:getDimX()
     local posY = this.j:getPosY() - math.random()*this.j:getDimY()
 	
-    local sizeMultiplier = 0.25 + math.random() * 0.25;
-	
-    local dimX = this.j:getDimX()*sizeMultiplier
-    local dimY = this.j:getDimY()*sizeMultiplier
+    local dimX = 0.12
+    local dimY = 0.12
 			
-    local velX = math.random()*6-3
-    local velY = math.random()*6-3
-	
-	local rotation = 360 - math.random()*720
-	local rotation_vel = 360 - math.random()*720
+    local velX = math.random()*14-7
+    local velY = math.random()*14-7
   
-    local new_e = lib.newEntity("particle")
+    local new_e = lib.newEntity("particle_sticky")
     new_e.j:setAnimation("blood_1")
   
-    this:shoot(new_e, posX, posY, velX, velY, dimX, dimY, rotation, 1)
+    this:shoot(new_e, posX, posY, velX, velY, dimX, dimY, rotation, 10)
   
   end
   
@@ -260,22 +255,34 @@ function collided(this, entity, direction)
   
   this:super_collided(entity, direction)
   
-  if direction == 0 then
-    this.j:setPosX(entity.j:getPosX() - this.j:getDimX())
-    if this.j:getVelX() > 0 then this.j:setVelX(0) end
-  elseif direction == 90 then
-    this.j:setPosY(entity.j:getPosY() - entity.j:getDimY())
-    if this.j:getVelY() > 0 then this.j:setVelY(0) end
-  elseif direction == 180 then
-    this.j:setPosX(entity.j:getPosX() + entity.j:getDimX())
-    if this.j:getVelX() < 0 then this.j:setVelX(0) end
-  elseif direction == 270 then
-    this.j:setPosY(entity.j:getPosY() + this.j:getDimY())
-    if this.j:getVelY() < 0 then this.j:setVelY(0) end
-    this.standing_on = entity
-    this.first_jumps = this.max_first_jumps
-    this.second_jumps = this.max_second_jumps
+  if not entity.is_platform then
+    if direction == 0 then
+      this.j:setPosX(entity.j:getPosX() - this.j:getDimX())
+      if this.j:getVelX() > 0 then this.j:setVelX(0) end
+    elseif direction == 90 then
+      this.j:setPosY(entity.j:getPosY() - entity.j:getDimY())
+      if this.j:getVelY() > 0 then this.j:setVelY(0) end
+    elseif direction == 180 then
+      this.j:setPosX(entity.j:getPosX() + entity.j:getDimX())
+      if this.j:getVelX() < 0 then this.j:setVelX(0) end
+    elseif direction == 270 then
+      this.j:setPosY(entity.j:getPosY() + this.j:getDimY())
+      if this.j:getVelY() < 0 then this.j:setVelY(0) end
+      this.standing_on = entity
+      this.first_jumps = this.max_first_jumps
+      this.second_jumps = this.max_second_jumps
+    end
+  else
+    if direction == 270 then
+      this.j:setPosY(entity.j:getPosY() + this.j:getDimY())
+      this.j:setVelY(0)
+      
+      this.standing_on = entity
+      this.first_jumps = this.max_first_jumps
+      this.second_jumps = this.max_second_jumps
+    end
   end
+  
 
 end
 
@@ -308,12 +315,6 @@ function process_collisions(this)
 end
 
 ------------------------------------------------
---
-
-function die(this)
-  this:playSound("guy_death")
-  this.j:die()
-end
 
 
 function jumpPressed(this)  

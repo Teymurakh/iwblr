@@ -11,9 +11,9 @@ public class SpikeHitboxSet extends RegularHitbox implements Hitbox{
 			finished[i] = new Point(0, 0);
 		}
 
-		points[0] = new Point(-1, 1);
+		points[0] = new Point(-1, 0.99f);
 		points[1] = new Point(1, 0);
-		points[2] = new Point(-1, -1);
+		points[2] = new Point(-1, -0.99f);
 
 		lines[0] = new Line(finished[0], finished[1]);
 		lines[1] = new Line(finished[1], finished[2]);

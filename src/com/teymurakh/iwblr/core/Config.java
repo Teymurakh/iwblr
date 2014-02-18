@@ -27,8 +27,6 @@ public class Config {
 	private float maximum_flying_speed;
 	private boolean draw_menu_debug;
 	private boolean auto_restart;
-	private boolean editorEnabled;
-	private boolean editingMode;
 	
 	
 	public void load() {
@@ -81,7 +79,6 @@ public class Config {
 		draw_debug = configMap.get("draw_debug").equals("true");
 		draw_menu_debug = configMap.get("draw_menu_debug").equals("true");
 		auto_restart = configMap.get("auto_restart").equals("true");
-		editingMode = configMap.get("editing_mode").equals("true");
 		gravity = Float.parseFloat(configMap.get("gravity"));
 		first_jump_speed = Float.parseFloat(configMap.get("first_jump_speed"));
 		second_jump_speed = Float.parseFloat(configMap.get("second_jump_speed"));
@@ -197,21 +194,5 @@ public class Config {
 
 	public void setAutoRestart(boolean auto_restart) {
 		this.auto_restart = auto_restart;
-	}
-
-	public boolean isEditorEnabled() {
-		return editorEnabled;
-	}
-
-	public void setEditorEnabled(boolean editorEnabled) {
-		this.editorEnabled = editorEnabled;
-	}
-
-	public boolean isEditingMode() {
-		return editingMode;
-	}
-
-	public void setEditingMode(boolean editingMode) {
-		this.editingMode = editingMode;
 	}
 }

@@ -12,6 +12,7 @@ import com.teymurakh.iwblr.entities.Entity;
 import com.teymurakh.iwblr.util.MyColor;
 
 public class Renderer {
+	private final FontHandler fontHandler;
 	
 	public boolean drawWorldLayer = true;
 	public boolean drawMenuLayer = true;
@@ -23,12 +24,16 @@ public class Renderer {
 	public Drawable[] guyLayerArray = new Drawable[0];
 	public Drawable[] gameOverLayerArray = new Drawable[0];
 	
+	public Renderer(FontHandler fontHandler) {
+		this.fontHandler = fontHandler;
+	}
+	
 	public void initialize() {
 		
 		int width = Game.config.getScreenWidth();
 		int height = Game.config.getScreenHeight();
         
-		GL11.glClearColor(0.08f, 0.83f, 1.0f, 0.0f);          
+		GL11.glClearColor(160f/255f, 162f/255f, 25f/255f, 0.0f);          
         
         	// enable alpha blending
         	GL11.glEnable(GL11.GL_BLEND);
@@ -51,7 +56,7 @@ public class Renderer {
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
 			// R,G,B,A Set The Color To Blue One Time Only
-			GL11.glColor3f(0.3f, 1.0f, 0.3f);
+			GL11.glColor3f(60f/255f, 100f/255f, 54f/255f);
 
 			// draw quad
 			GL11.glPushMatrix();
@@ -193,7 +198,7 @@ public class Renderer {
 		String[] splitString = string.split("");
 		for (int i = 0; i < string.length(); i++) {
 			String letter = splitString[i+1];
-			if (Game.fontHandler.containsTexture("" + letter)) {
+			if (fontHandler.containsTexture("" + letter)) {
 				drawLetter(x + size*i, y, size, letter);
 			}
 		}
@@ -201,7 +206,7 @@ public class Renderer {
 	
 	private void drawLetter(float x, float y, int size, String letter) {
 		String textureMapName = "" + letter;
-		MappedTexture mappedTexture = Game.fontHandler.getMappedTexture(textureMapName);
+		MappedTexture mappedTexture = fontHandler.getMappedTexture(textureMapName);
 		float width = (float)(size);
 		float height = (float)(size*2);
 		drawTexture(mappedTexture, x, y, width, height, 0, false, false);

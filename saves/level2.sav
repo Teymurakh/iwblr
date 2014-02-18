@@ -1,2 +1,7 @@
-guy_x = 3
-guy_y = 5
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<gameState version="1.5">
+    <parameters>
+        <parameter name="guy_y" value="1.9600786"/>
+        <parameter name="guy_x" value="5.856174"/>
+    </parameters>
+</gameState>

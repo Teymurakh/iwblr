@@ -21,8 +21,8 @@ end
 
 function initialize(this)
   		this.j:setAnimation("spike_normal")
-		this.j:addTag("spike")
   		this.j:addCollision("guy")
+		this.j:addTag("spike")
 		this.j:setHitbox("spike")
 		this.j:setRectangular(false)
 		this.j:setRotation(0)

@@ -35,6 +35,11 @@ public class ListHelper {
 		}
 	}
 	
+	public void removeGlobal(Entity entity) {
+		global.removeEntity(entity);
+	}
+	
+	
 	public void removeEntityGlobal(Entity entity) {
 		global.removeEntity(entity);
 	}
@@ -77,17 +82,11 @@ public class ListHelper {
 	
 	////////////////////////////////////
 	public void refreshActive(Rectangle rect) {
-		System.out.println("Refreshing active lists");
 		active.clear();
-		
-		for(Entity item : global) {
-			if (Collisions.twoRectangles(rect, item.getRect())) {
-				active.addEntity(item);
-				sortIntoLists(item);
-			}
+		for (String key : tagLists.keySet()) {
+			tagLists.get(key).clear();
 		}
 	}
-	
 	
 	/////////////////
 	

@@ -21,7 +21,12 @@ public class LuaVM {
 	private static String compiledPath = "resources/scripts/compiled/";
 	
 	public static final ArrayList<String> toLoad = new ArrayList<String>();
+	public static final ArrayList<String> withPeriods = new ArrayList<String>();
 	private static LuaValue _G;
+	
+	public static ArrayList<String> getAllAvaliable() {
+		return withPeriods;
+	}
 	
 	public static void loadVm() {
 		//////////////////////////////
@@ -30,13 +35,24 @@ public class LuaVM {
 		for (String name : unparsed) {
 			toLoad.add(name.replaceAll(".lua", ""));
 		}
-		///////////////////////////////
 		
-		for (String name : toLoad) {
-			processLuaEntity(rawPath + "entities/" + name + ".lua", debugPath + "entities/" + name + ".lua");
+		ArrayList<String> unparsed2 = listFilesForFolder2(folder);
+		ArrayList<String> withDashes = new ArrayList<String>();
+		for (String name : unparsed2) {
+			
+			withDashes.add(name.replaceAll(".lua", ""));
+			withPeriods.add(name.replaceAll(".lua", "").replaceAll("/", "."));
+			
 		}
 		
-		for (String name : toLoad) {
+		
+		///////////////////////////////
+		
+		for (String name : withDashes) {
+			processLuaEntity(rawPath + "entities/" + name + ".lua", debugPath + "entities/" + name.replaceAll("/", ".") + ".lua");
+		}
+		
+		for (String name : withPeriods) {
 			compile(debugPath + "entities/" + name + ".lua", compiledPath + "entities/" + name);
 		}
 
@@ -50,7 +66,7 @@ public class LuaVM {
 		_G = JsePlatform.standardGlobals();
 		_G.get("dofile").call( LuaValue.valueOf(script) );
 		
-		call("initialize", toLoad);
+		call("initialize", withPeriods);
 	}
 	
 	
@@ -116,6 +132,25 @@ public class LuaVM {
 	    return files;
 	}
 	
+	public static ArrayList<String> listFilesForFolder2(File folder) {
+		ArrayList<String> files = new ArrayList<String>();
+		String rootName = "";
+	    
+	    return recursivePart(folder, files, rootName);
+	}
+	
+	public static ArrayList<String> recursivePart(File folder, ArrayList<String> files, String lastFolders) {
+		
+	    for (final File fileEntry : folder.listFiles()) { // Files in this folder
+	        if (fileEntry.isDirectory()) { // If the file is a folder
+	        	recursivePart(fileEntry, files, lastFolders + fileEntry.getName() + "/");
+	        } else {
+	        	files.add(lastFolders + fileEntry.getName());
+	        }
+	    }
+	    
+	    return files;
+	}
 	
 	
 	

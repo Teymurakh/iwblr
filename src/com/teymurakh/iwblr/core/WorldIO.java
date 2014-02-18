@@ -22,7 +22,6 @@ public class WorldIO {
 	}
 
 	public void loadLevel(String levelName, World world) {
-		world.setName(levelName);
 		String filePath = levelDirectoryPath + levelName + ".xml";
 		try {
 			Document doc = XmlHelper.loadDoc(filePath);
